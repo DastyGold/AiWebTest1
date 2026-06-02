@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Нейрон</title>
+        <link rel="stylesheet" href="./css/main.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <nav class="nav">
+            <div class="container">
+                <div class="nav-row">
+                    <a href="./index.html" class="logo"><img src="./img/icon/icons8-neuron-50.png" alt="link"></a>
+                    <ul class="nav-list">
+                        <li class="nav-list__item"><a href="./index.html" class="nav-list__link nav-list__link--active">главная</a></li>
+                        <li class="nav-list__item"><a href="./resume.html" class="nav-list__link">резюме</a></li>
+                        <li class="nav-list__item"><a href="./book.html" class="nav-list__link">книги</a></li>
+                        <li class="nav-list__item"><a href="./contacts.html" class="nav-list__link">контакты</a></li>
+                        <li class="nav-list__item"><a href="./feedback.html" class="nav-list__link">обратная связь</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <main>
+            <header class="header">
+                <div class="header__wrapper">
+                    <h1 class="header__title">
+                        <strong>Привет, мой никнейм <em>  « }{0ТТ@БЬ)Ч »</em></strong><br>
+                    </h1>
+                    <div class="header__text">
+                        <p>Я люблю жизнь и стремлюсь к саморазвитию.</p>
+                    </div>
+                    <a href="#" class="btn" onclick="openChat()">Начать</a>
+                </div>
+            </header>
+        </main>
+        
+        <!-- Chat Modal -->
+        <div id="chatModal" class="chat-modal">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Чат с нейросетью</h2>
+                    <span class="chat-close" onclick="closeChat()">&times;</span>
+                </div>
+                <div class="chat-history" id="chatHistory">
+                    <!-- Сообщения будут добавляться сюда динамически -->
+                </div>
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <input type="text" id="chatInput" placeholder="Введите ваш вопрос..." />
+                        <button id="sendButton" class="send-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="chatLoading" class="chat-loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Нейросеть думает...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__wrapper">
+                    <ul class="social">
+                        <li class="social__item"><a href="https://vk.com/assistshow"><img src="./img/icon/vk.svg" alt="link"></a></li>
+                        <!-- <li class="social__item"><a href="#!"><img src="./img/icon/instagram.svg" alt="link"></a></li> -->
+                        <!-- <li class="social__item"><a href="#!"><img src="./img/icon/twitter.svg" alt="link"></a></li> -->
+                        <!-- <li class="social__item"><a href="#!"><img src="./img/icon/gitHub.svg" alt="link"></a></li> -->
+                        <!-- <li class="social__item"><a href="#!"><img src="./img/icon/linkedIn.svg" alt="link"></a></li> -->
+                    </ul>
+                    <div class="copyright">
+                        <p>© 2025 Сергей Сапегов</p>
+                    </div>
+                </div>
+            </div>
+        </footer>  
+     <script src="./js/script.js"></script>
+     <script src="./js/debug.js"></script>
+    </body>
+</html>

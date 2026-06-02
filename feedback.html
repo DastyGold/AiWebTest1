@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Обратная связь - Нейрон</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <nav class="nav" role="navigation" aria-label="Основная навигация">
+        <div class="container">
+            <div class="nav-row">
+                <a href="./index.html" class="logo" aria-label="Перейти на главную страницу"><img src="./img/icon/icons8-eye-50.png" alt="Логотип сайта"></a>
+                <ul class="nav-list">
+                    <li class="nav-list__item"><a href="./index.html" class="nav-list__link">главная</a></li>
+                    <li class="nav-list__item"><a href="./resume.html" class="nav-list__link">резюме</a></li>
+                    <li class="nav-list__item"><a href="./book.html" class="nav-list__link">книги</a></li>
+                    <li class="nav-list__item"><a href="./contacts.html" class="nav-list__link">контакты</a></li>
+                    <li class="nav-list__item"><a href="./feedback.html" class="nav-list__link nav-list__link--active" aria-current="page">обратная связь</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="section" id="main-content">
+        <div class="container">
+            <h1 class="title-1">Обратная связь</h1>
+            
+            <div class="feedback-container">
+                <form id="feedbackForm" class="feedback-form" aria-labelledby="feedback-heading">
+                    <fieldset>
+                        <legend id="feedback-heading" class="sr-only">Форма обратной связи</legend>
+                        <div class="form-group">
+                            <label for="name" class="form-label">Ваше имя <span aria-label="обязательное поле">*</span></label>
+                            <input type="text" id="name" name="name" class="form-input" required aria-required="true" aria-describedby="name-error" autocomplete="name">
+                            <div id="name-error" class="error-message" role="alert" aria-live="assertive"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email <span aria-label="обязательное поле">*</span></label>
+                            <input type="email" id="email" name="email" class="form-input" required aria-required="true" aria-describedby="email-error" autocomplete="email">
+                            <div id="email-error" class="error-message" role="alert" aria-live="assertive"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Тема <span aria-label="обязательное поле">*</span></label>
+                            <input type="text" id="subject" name="subject" class="form-input" required aria-required="true" aria-describedby="subject-error">
+                            <div id="subject-error" class="error-message" role="alert" aria-live="assertive"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">Сообщение <span aria-label="обязательное поле">*</span></label>
+                            <textarea id="message" name="message" class="form-textarea" rows="6" required aria-required="true" aria-describedby="message-error"></textarea>
+                            <div id="message-error" class="error-message" role="alert" aria-live="assertive"></div>
+                            <div id="message-counter" class="character-counter" aria-live="polite"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn" id="submitBtn" aria-describedby="submit-help">Отправить сообщение</button>
+                        <div id="submit-help" class="sr-only">Форма будет отправлена после заполнения всех обязательных полей</div>
+                    </fieldset>
+                    
+                    <div id="loadingIndicator" class="loading-indicator" aria-live="polite" role="status">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <span>Отправка сообщения...</span>
+                    </div>
+                    
+                    <div id="successMessage" class="success-message" role="alert" aria-live="assertive">
+                        Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__wrapper">
+                <ul class="social">
+                    <li class="social__item"><a href="https://vk.com/assistshow"><img src="./img/icon/vk.svg" alt="link"></a></li>
+                </ul>
+                <div class="copyright">
+                    <p>© 2025 Сергей Сапегов</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ======================================================================
+        // ЭЛЕМЕНТЫ DOM
+        // ======================================================================
+        const feedbackForm = document.getElementById('feedbackForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const successMessage = document.getElementById('successMessage');
+        const messageCounter = document.getElementById('message-counter');
+        const errorMessages = {
+            name: document.getElementById('name-error'),
+            email: document.getElementById('email-error'),
+            subject: document.getElementById('subject-error'),
+            message: document.getElementById('message-error')
+        };
+        
+        // ======================================================================
+        // КОНСТАНТЫ
+        // ======================================================================
+        // Ключ для localStorage
+        const STORAGE_KEY = 'feedbackFormDraft';
+        
+        // ======================================================================
+        // ФУНКЦИИ ОТОБРАЖЕНИЯ ОШИБОК
+        // ======================================================================
+        
+        /**
+         * Отображает сообщение об ошибке для указанного поля
+         * @param {string} field - Имя поля (name, email, subject, message)
+         * @param {string} message - Текст сообщения об ошибке
+         */
+        function showError(field, message) {
+            errorMessages[field].textContent = message;
+            errorMessages[field].classList.add('show');
+            document.getElementById(field).classList.add('error');
+        }
+        
+        /**
+         * Скрывает сообщение об ошибке для указанного поля
+         * @param {string} field - Имя поля (name, email, subject, message)
+         */
+        function hideError(field) {
+            errorMessages[field].classList.remove('show');
+            document.getElementById(field).classList.remove('error');
+        }
+        
+        // ======================================================================
+        // ФУНКЦИИ ВАЛИДАЦИИ
+        // ======================================================================
+        
+        /**
+         * Проверяет корректность email адреса
+         * @param {string} email - Email адрес для проверки
+         * @returns {boolean} - true, если email корректен, иначе false
+         */
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        /**
+         * Проверяет корректность имени пользователя
+         * @param {string} name - Имя для проверки
+         * @returns {string|null} - Сообщение об ошибке или null, если имя корректно
+         */
+        function validateName(name) {
+            // Проверка на пустоту
+            if (name === '') {
+                return 'Пожалуйста, введите ваше имя';
+            }
+            
+            // Проверка на длину (минимум 2 символа)
+            if (name.length < 2) {
+                return 'Имя должно содержать минимум 2 символа';
+            }
+            
+            // Проверка на длину (максимум 50 символов)
+            if (name.length > 50) {
+                return 'Имя не должно превышать 50 символов';
+            }
+            
+            // Проверка на наличие запрещенных символов
+            if (/[^a-zA-Zа-яА-ЯёЁ\s\-'\.]/.test(name)) {
+                return 'Имя может содержать только буквы, пробелы, дефисы, апострофы и точки';
+            }
+            
+            // Проверка на наличие хотя бы одной буквы
+            if (!/[a-zA-Zа-яА-ЯёЁ]/.test(name)) {
+                return 'Имя должно содержать хотя бы одну букву';
+            }
+            
+            return null; // Нет ошибки
+        }
+        
+        /**
+         * Проверяет корректность темы сообщения
+         * @param {string} subject - Тема для проверки
+         * @returns {string|null} - Сообщение об ошибке или null, если тема корректна
+         */
+        function validateSubject(subject) {
+            // Проверка на пустоту
+            if (subject === '') {
+                return 'Пожалуйста, введите тему сообщения';
+            }
+            
+            // Проверка на минимальную длину
+            if (subject.length < 3) {
+                return 'Тема должна содержать минимум 3 символа';
+            }
+            
+            // Проверка на максимальную длину
+            if (subject.length > 100) {
+                return 'Тема не должна превышать 100 символов';
+            }
+            
+            // Проверка на наличие хотя бы одной буквы или цифры
+            if (!/[a-zA-Zа-яА-ЯёЁ0-9]/.test(subject)) {
+                return 'Тема должна содержать хотя бы одну букву или цифру';
+            }
+            
+            return null; // Нет ошибки
+        }
+        
+        /**
+         * Проверяет корректность текста сообщения
+         * @param {string} message - Сообщение для проверки
+         * @returns {string|null} - Сообщение об ошибке или null, если сообщение корректно
+         */
+        function validateMessage(message) {
+            // Проверка на пустоту
+            if (message === '') {
+                return 'Пожалуйста, введите ваше сообщение';
+            }
+            
+            // Проверка на минимальную длину
+            if (message.length < 10) {
+                return 'Сообщение должно содержать минимум 10 символов';
+            }
+            
+            // Проверка на максимальную длину
+            if (message.length > 1000) {
+                return 'Сообщение не должно превышать 1000 символов';
+            }
+            
+            // Проверка на наличие хотя бы одной буквы или цифры
+            if (!/[a-zA-Zа-ЯёЁ0-9]/.test(message)) {
+                return 'Сообщение должно содержать хотя бы одну букву или цифру';
+            }
+            
+            return null; // Нет ошибки
+        }
+        
+        /**
+         * Обновляет счетчик символов в поле сообщения
+         * Отображает предупреждения при приближении к лимиту
+         */
+        function updateMessageCounter() {
+            const message = document.getElementById('message');
+            const length = message.value.length;
+            
+            // Обновляем текст счетчика
+            messageCounter.textContent = `${length}/1000`;
+            
+            // Удаляем все классы предупреждений
+            messageCounter.classList.remove('warning', 'error');
+            
+            // Добавляем классы в зависимости от длины
+            if (length > 900) {
+                messageCounter.classList.add('error');
+            } else if (length > 750) {
+                messageCounter.classList.add('warning');
+            }
+            
+            // Скрываем счетчик, если поле пустое
+            if (length === 0) {
+                messageCounter.style.display = 'none';
+            } else {
+                messageCounter.style.display = 'block';
+            }
+        }
+        
+        /**
+         * Сохраняет текущие данные формы в localStorage как черновик
+         * Показывает уведомление при ошибке сохранения
+         */
+        function saveDraft() {
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+            } catch (e) {
+                console.error('Не удалось сохранить черновик:', e);
+                // Показываем уведомление об ошибке
+                const errorNotification = document.createElement('div');
+                errorNotification.className = 'error-message show';
+                errorNotification.textContent = 'Не удалось сохранить черновик. Возможно, закончилось место в локальном хранилище.';
+                errorNotification.style.marginTop = '10px';
+                
+                // Добавляем уведомление в форму
+                const form = document.getElementById('feedbackForm');
+                form.insertBefore(errorNotification, form.firstChild.nextSibling); // После заголовка формы
+                
+                // Автоматически скрываем уведомление через 5 секунд
+                setTimeout(() => {
+                    if (errorNotification.parentNode) {
+                        errorNotification.remove();
+                    }
+                }, 5000);
+            }
+        }
+        
+        /**
+         * Загружает сохраненный черновик из localStorage
+         * Показывает уведомление об устаревшем черновике или ошибках
+         */
+        function loadDraft() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    const formData = JSON.parse(savedData);
+                    
+                    // Заполняем поля формы
+                    document.getElementById('name').value = formData.name || '';
+                    document.getElementById('email').value = formData.email || '';
+                    document.getElementById('subject').value = formData.subject || '';
+                    document.getElementById('message').value = formData.message || '';
+                    
+                    // Обновляем счетчик символов
+                    updateMessageCounter();
+                    
+                    // Проверяем, не устарел ли черновик (более 24 часов)
+                    const savedTime = new Date(formData.timestamp);
+                    const currentTime = new Date();
+                    const diffHours = (currentTime - savedTime) / (1000 * 60 * 60);
+                    
+                    if (diffHours > 24) {
+                        // Показываем уведомление об устаревшем черновике
+                        const notification = document.createElement('div');
+                        notification.className = 'success-message show';
+                        notification.textContent = 'Загружен черновик от ' + savedTime.toLocaleString('ru-RU') + '. Данные могут быть устаревшими.';
+                        notification.style.marginBottom = '20px';
+                        feedbackForm.insertBefore(notification, feedbackForm.firstChild);
+                        
+                        // Автоматически скрываем уведомление через 5 секунд
+                        setTimeout(() => {
+                            notification.remove();
+                        }, 5000);
+                    }
+                }
+            } catch (e) {
+                console.error('Не удалось загрузить черновик:', e);
+                // Очищаем поврежденные данные
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // Показываем уведомление об ошибке
+                const errorNotification = document.createElement('div');
+                errorNotification.className = 'error-message show';
+                errorNotification.textContent = 'Произошла ошибка при загрузке черновика. Данные были очищены.';
+                errorNotification.style.marginBottom = '20px';
+                feedbackForm.insertBefore(errorNotification, feedbackForm.firstChild);
+                
+                // Автоматически скрываем уведомление через 5 секунд
+                setTimeout(() => {
+                    errorNotification.remove();
+                }, 5000);
+            }
+        }
+        
+        /**
+         * Очищает черновик из localStorage
+         * Используется после успешной отправки формы
+         */
+        function clearDraft() {
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Не удалось очистить черновик:', e);
+            }
+        }
+        
+        /**
+         * Проверяет корректность всех полей формы
+         * Отображает ошибки для некорректных полей
+         * @returns {boolean} - true, если форма корректна, иначе false
+         */
+        function validateForm() {
+            let isValid = true;
+            
+            // Скрываем все ошибки
+            Object.keys(errorMessages).forEach(field => {
+                hideError(field);
+            });
+            
+            // Валидация имени
+            const name = document.getElementById('name').value.trim();
+            const nameError = validateName(name);
+            if (nameError) {
+                showError('name', nameError);
+                isValid = false;
+            }
+            
+            // Валидация email
+            const email = document.getElementById('email').value.trim();
+            if (email === '') {
+                showError('email', 'Пожалуйста, введите ваш email');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('email', 'Пожалуйста, введите корректный email');
+                isValid = false;
+            }
+            
+            // Валидация темы
+            const subject = document.getElementById('subject').value.trim();
+            const subjectError = validateSubject(subject);
+            if (subjectError) {
+                showError('subject', subjectError);
+                isValid = false;
+            }
+            
+            // Валидация сообщения
+            const message = document.getElementById('message').value.trim();
+            const messageError = validateMessage(message);
+            if (messageError) {
+                showError('message', messageError);
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        /**
+         * Показывает индикатор загрузки и блокирует кнопку отправки
+         */
+        function showLoading() {
+            submitBtn.disabled = true;
+            loadingIndicator.classList.add('show');
+            successMessage.classList.remove('show');
+        }
+        
+        /**
+         * Скрывает индикатор загрузки и разблокирует кнопку отправки
+         */
+        function hideLoading() {
+            submitBtn.disabled = false;
+            loadingIndicator.classList.remove('show');
+        }
+        
+        /**
+         * Показывает сообщение об успешной отправке
+         * Прокручивает страницу к сообщению
+         */
+        function showSuccess() {
+            successMessage.classList.add('show');
+            // Скроллим к сообщению об успехе
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        /**
+         * Сбрасывает форму к начальному состоянию
+         * Очищает все поля и ошибки
+         */
+        function resetForm() {
+            feedbackForm.reset();
+            // Скрываем все ошибки
+            Object.keys(errorMessages).forEach(field => {
+                hideError(field);
+            });
+            // Обновляем счетчик символов
+            updateMessageCounter();
+            // Очищаем черновик
+            clearDraft();
+        }
+        
+        /**
+         * Обработчик отправки формы
+         * Выполняет валидацию, показывает индикатор загрузки и отправляет данные на сервер
+         */
+        feedbackForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Валидация формы
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            showLoading();
+            
+            // Получаем данные формы
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+            
+            try {
+                // Отправляем данные на сервер
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Скрываем индикатор загрузки
+                    hideLoading();
+                    
+                    // Показываем сообщение об успехе
+                    showSuccess();
+                    
+                    // Сбрасываем форму через 3 секунды
+                    setTimeout(() => {
+                        resetForm();
+                    }, 3000);
+                } else {
+                    // Скрываем индикатор загрузки
+                    hideLoading();
+                    
+                    // Показываем сообщение об ошибке
+                    const errorNotification = document.createElement('div');
+                    errorNotification.className = 'error-message show';
+                    errorNotification.textContent = result.error || 'Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте позже.';
+                    errorNotification.style.marginTop = '20px';
+                    feedbackForm.appendChild(errorNotification);
+                    
+                    // Автоматически скрываем уведомление через 5 секунд
+                    setTimeout(() => {
+                        errorNotification.remove();
+                    }, 5000);
+                }
+            } catch (error) {
+                // Скрываем индикатор загрузки
+                hideLoading();
+                
+                // Показываем сообщение об ошибке
+                const errorNotification = document.createElement('div');
+                errorNotification.className = 'error-message show';
+                errorNotification.textContent = 'Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте позже.';
+                errorNotification.style.marginTop = '20px';
+                feedbackForm.appendChild(errorNotification);
+                
+                // Автоматически скрываем уведомление через 5 секунд
+                setTimeout(() => {
+                    errorNotification.remove();
+                }, 5000);
+                
+                console.error('Ошибка при отправке сообщения:', error);
+            }
+        });
+        
+        /**
+         * Добавляет обработчики событий для всех полей формы
+         * Обеспечивает валидацию в реальном времени и автосохранение
+         */
+        Object.keys(errorMessages).forEach(field => {
+            const element = document.getElementById(field);
+            
+            /**
+             * Обработчик ввода текста
+             * Скрывает ошибки, сохраняет черновик и выполняет валидацию для имени и темы
+             */
+            element.addEventListener('input', function() {
+                // Скрываем ошибку при вводе
+                hideError(field);
+                
+                // Сохраняем черновик при каждом изменении
+                saveDraft();
+                
+                // Проверяем валидацию для имени и темы при вводе
+                if (field === 'name' && element.value.trim().length > 0) {
+                    const nameError = validateName(element.value.trim());
+                    if (nameError) {
+                        showError('name', nameError);
+                    }
+                }
+                
+                if (field === 'subject' && element.value.trim().length > 0) {
+                    const subjectError = validateSubject(element.value.trim());
+                    if (subjectError) {
+                        showError('subject', subjectError);
+                    }
+                }
+            });
+            
+            /**
+             * Обработчик потери фокуса
+             * Выполняет полную валидацию поля при потере фокуса
+             */
+            element.addEventListener('blur', function() {
+                if (element.value.trim().length > 0) {
+                    let error = null;
+                    
+                    switch(field) {
+                        case 'name':
+                            error = validateName(element.value.trim());
+                            break;
+                        case 'email':
+                            if (!validateEmail(element.value.trim())) {
+                                error = 'Пожалуйста, введите корректный email';
+                            }
+                            break;
+                        case 'subject':
+                            error = validateSubject(element.value.trim());
+                            break;
+                        case 'message':
+                            error = validateMessage(element.value.trim());
+                            break;
+                    }
+                    
+                    if (error) {
+                        showError(field, error);
+                    }
+                }
+            });
+        });
+        
+        /**
+         * Обработчик ввода текста в поле сообщения
+         * Обновляет счетчик символов в реальном времени
+         */
+        document.getElementById('message').addEventListener('input', updateMessageCounter);
+        
+        /**
+         * Обработчик загрузки страницы
+         * Загружает сохраненный черновик при открытии страницы
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDraft();
+        });
+        
+        /**
+         * Обработчик перед закрытием страницы
+         * Сохраняет текущие данные формы как черновик
+         */
+        window.addEventListener('beforeunload', function() {
+            saveDraft();
+        });
+    </script>
+</body>
+</html>

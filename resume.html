@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Резюме - Нейрон</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-row">
+                <a href="./index.html" class="logo"><img src="./img/icon/icons8-neuron-50.png" alt="link"></a>
+                <ul class="nav-list">
+                        <li class="nav-list__item"><a href="./index.html" class="nav-list__link">главная</a></li>
+                        <li class="nav-list__item"><a href="./resume.html" class="nav-list__link nav-list__link--active">резюме</a></li>
+                        <li class="nav-list__item"><a href="./book.html" class="nav-list__link">книги</a></li>
+                        <li class="nav-list__item"><a href="./contacts.html" class="nav-list__link">контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="section">
+        <div class="container">
+            
+            <div class="resume-container">
+                <!-- Боковая панель -->
+                <div class="resume-sidebar">
+                    <div class="resume-header">
+                        <!-- Фото -->
+                        <div class="resume-photo">
+                            <img src="./img/resume-photo.jpg" alt="Фото">
+                        </div>
+                        
+                        <!-- Основная информация -->
+                        <h2 class="title-2">Информация</h2>
+                        <div class="resume-contact-item">
+                            <span class="resume-contact-label">Имя:</span>
+                            <span class="resume-contact-value" id="resume-name">Сергей Сапегов</span>
+                        </div>
+                        <div class="resume-contact-item">
+                            <span class="resume-contact-label">Профессия:</span>
+                            <span class="resume-contact-value" id="resume-position">Веб-разработчик</span>
+                        </div>
+                        <div class="resume-contact-item">
+                            <span class="resume-contact-label">Местоположение:</span>
+                            <span class="resume-contact-value" id="resume-location">Россия</span>
+                        </div>
+                        <div class="resume-contact-item">
+                            <span class="resume-contact-label">Email:</span>
+                            <span class="resume-contact-value" id="resume-email">sergeysapegov@gmail.com</span>
+                        </div>
+                        <div class="resume-contact-item">
+                            <span class="resume-contact-label">Телефон:</span>
+                            <span class="resume-contact-value" id="resume-phone">+7 (920) 019-63-85</span>
+                        </div>
+                        
+                        <!-- Навыки -->
+                        <div class="resume-skills">
+                            <h2 class="title-2">Навыки</h2>
+                            <div class="skill-item">
+                                <div class="skill-name">
+                                    <span>HTML/CSS</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-name">
+                                    <span>JavaScript</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-name">
+                                    <span>React</span>
+                                    <span>80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-name">
+                                    <span>Node.js</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-name">
+                                    <span>Git</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Скачать резюме -->
+                        <div class="resume-download">
+                            <a href="#" class="btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                </svg>
+                                Скачать резюме
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Основное содержимое -->
+                <div class="resume-main">
+                    <!-- Образование -->
+                    <div class="resume-section">
+                        <h2 class="title-2">Образование</h2>
+                        <div class="resume-timeline">
+                            <div class="timeline-item">
+                                <span class="timeline-date" id="education-years">2010-2026</span>
+                                <h3 class="timeline-title" id="education-university">Самообразование, ИИ, vibecod.</h3>
+                                <div class="timeline-subtitle" id="education-specialty">Промпт инжинер</div>
+                                <div class="timeline-description" id="education-description">Разработка, оформление сайта и программного обеспечения. </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Опыт работы -->
+                    <div class="resume-section">
+                        <h2 class="title-2">Опыт работы</h2>
+                        <div class="resume-timeline">
+                            <div class="timeline-item">
+                                <span class="timeline-date" id="experience-period">2020-2023</span>
+                                <h3 class="timeline-title" id="experience-position">Веб-разработчик</h3>
+                                <div class="timeline-subtitle" id="experience-company">Название компании</div>
+                                <div class="timeline-description" id="experience-duties">Описание обязанностей и достижений</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Дополнительная информация -->
+                    <div class="resume-section">
+                        <h2 class="title-2">Дополнительная информация</h2>
+                        <div class="timeline-description">
+                            <p>Мой первый веб‑проект на HTML, CSS и JavaScript стал итогом обучения на курсе «Веб‑разработчик». В работе я использовал ИИ‑инструменты GigaCode и Code Assistant — они ускорили разработку, помогли избежать ошибок и дали полезные подсказки по коду. Проект закрепил базовые навыки фронтенда и показал, как эффективно применять ИИ‑ассистентов в реальной разработке.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__wrapper">
+                <ul class="social">
+                    <li class="social__item"><a href="https://vk.com/assistshow"><img src="./img/icon/vk.svg" alt="link"></a></li>
+                </ul>
+                <div class="copyright">
+                    <p>© 2025 Сергей Сапегов</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
